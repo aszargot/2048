@@ -1,0 +1,13 @@
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.exe.config
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.csprojResolveAssemblyReference.cache
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\_2048.Form1.resources
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\_2048.Properties.Resources.resources
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.csproj.GenerateResource.Cache
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.exe
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.pdb
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\EntityFramework.dll
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\EntityFramework.SqlServer.dll
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\EntityFramework.xml
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\EntityFramework.SqlServer.xml
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.exe
+c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.pdb
