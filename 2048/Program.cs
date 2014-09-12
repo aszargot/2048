@@ -18,11 +18,8 @@ namespace _2048
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
 
-            Game game = new Game();
-
-            game.Run();
 
             //IRepository repo = new RepoEntity();
 

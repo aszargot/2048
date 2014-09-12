@@ -11,3 +11,29 @@ c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\Enti
 c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\bin\Debug\EntityFramework.SqlServer.xml
 c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.exe
 c:\users\shagatta\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.pdb
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\2048.exe.config
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\2048.exe
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\2048.pdb
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\2048.csprojResolveAssemblyReference.cache
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\_2048.Form1.resources
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\_2048.Properties.Resources.resources
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\obj\Debug\2048.csproj.GenerateResource.Cache
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\2048.exe
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\2048.pdb
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\EntityFramework.dll
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\EntityFramework.xml
+C:\Users\Paweł\Downloads\2048-master\2048-master\2048\bin\Debug\EntityFramework.SqlServer.xml
+C:\ath\2048-master\2048-master\2048\bin\Debug\2048.exe.config
+C:\ath\2048-master\2048-master\2048\obj\Debug\2048.exe
+C:\ath\2048-master\2048-master\2048\obj\Debug\2048.pdb
+C:\ath\2048-master\2048-master\2048\bin\Debug\2048.exe
+C:\ath\2048-master\2048-master\2048\bin\Debug\2048.pdb
+C:\ath\2048-master\2048-master\2048\bin\Debug\EntityFramework.dll
+C:\ath\2048-master\2048-master\2048\bin\Debug\EntityFramework.SqlServer.dll
+C:\ath\2048-master\2048-master\2048\bin\Debug\EntityFramework.xml
+C:\ath\2048-master\2048-master\2048\bin\Debug\EntityFramework.SqlServer.xml
+C:\ath\2048-master\2048-master\2048\obj\Debug\2048.csprojResolveAssemblyReference.cache
+C:\ath\2048-master\2048-master\2048\obj\Debug\_2048.Form1.resources
+C:\ath\2048-master\2048-master\2048\obj\Debug\_2048.Properties.Resources.resources
+C:\ath\2048-master\2048-master\2048\obj\Debug\2048.csproj.GenerateResource.Cache

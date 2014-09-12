@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TileElement.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DAL\Context.cs" />
     <Compile Include="DAL\IRepository.cs" />
     <Compile Include="DAL\RepoEntity.cs" />
@@ -62,6 +66,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Game.cs" />
+    <Compile Include="KeyDownListener.cs" />
     <Compile Include="Model\Score.cs" />
     <Compile Include="Model\Tile.cs" />
     <Compile Include="Program.cs" />

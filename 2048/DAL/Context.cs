@@ -14,6 +14,5 @@ namespace _2048.DAL
         }
 
         public DbSet<_2048.Model.Score> Scores { get; set; }
-
     }
 }

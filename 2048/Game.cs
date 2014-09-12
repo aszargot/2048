@@ -1,8 +1,10 @@
 ﻿using _2048.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace _2048
@@ -10,13 +12,26 @@ namespace _2048
     public class Game
     {
         private const int _boardSize = 4;
-        private Tile[,] board;
 
+        private Tile[,] board;
         public Tile[,] Board
         {
             get { return board; }
             set { board = value; }
         }
+
+        public int Size
+        {
+            get
+            {
+                return _boardSize * _boardSize;
+            }
+        }
+        private bool _positionChanged;
+
+        private KeyDownListener _keyDownListener;
+        public delegate void KeyDownHandler(Direction direction);
+        public event KeyDownHandler KeyDownEvent;
 
         public Game()
         {
@@ -28,55 +43,27 @@ namespace _2048
                     board[i, j] = new Tile();
                 }
             }
+            //_keyDownListener = new KeyDownListener(this);
 
-            board[0, 0].Value = 1;
-            board[1, 0].Value = 2;
-            board[2, 0].Value = 3;
-            board[3, 0].Value = 4;
+            //KeyDownEvent += new KeyDownHandler(_keyDownListener.KeyDownRaises);
+
+            PlaceNewElementOnTheBoard();
+            PlaceNewElementOnTheBoard();
         }
 
-        public void Run()
+        public void Test(Direction direction)
+        {
+            KeyDownEvent(direction);
+        }
+
+        public void Move(Direction direction)
         {
             if (IsGameOver())
             {
                 throw new Exception("Game Over!!!");
             }
 
-            for (int i = 0; i < 1; i++)
-            {
-                MoveUp();
-            }
-        }
-
-        private bool IsGameOver()
-        {
-            for (int row = 0; row < _boardSize; row++)
-            {
-                for (int col = 0; col < _boardSize; col++)
-                {
-                    if (board[row, col].Value == 0 || IsPossibleMove(row, col))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        private bool IsPossibleMove(int row, int col)
-        {
-            var currentTile = board[row, col];
-
-            bool left = col == 0 ? false : board[row, col - 1].Value == currentTile.Value;
-            bool right = col == _boardSize - 1 ? false : board[row, col + 1].Value == currentTile.Value;
-            bool down = row == _boardSize - 1 ? false : board[row + 1, col].Value == currentTile.Value;
-            bool up = row == 0? false : board[row - 1, col].Value == currentTile.Value;
-
-            return left || right || down || up;
-        }
-
-        private void Move(Direction direction)
-        {
+            _positionChanged = false;
             switch (direction)
             {
                 case Direction.Right:
@@ -92,32 +79,35 @@ namespace _2048
                     MoveUp();
                     break;
                 default:
-                    break;
+                    return;
+            }
+
+            if (_positionChanged)
+            {
+                PlaceNewElementOnTheBoard();
             }
         }
 
-        //private Tile GetNext(int row, int col)
-        //{
-        //    return board[row + 1, col];
-        //}
-
-        private void PutNewElement()
+        private void PlaceNewElementOnTheBoard()
         {
             var emptyTiles = new List<Tile>();
             for (int i = 0; i < _boardSize; i++)
             {
                 for (int j = 0; j < _boardSize; j++)
                 {
-                    if (board[i,j].Value==0)
+                    if (board[i, j].Value == 0)
                     {
                         emptyTiles.Add(board[i, j]);
                     }
                 }
             }
 
-            emptyTiles.
+            if (emptyTiles.Count > 0)
+            {
+                var randomEmptyTile = emptyTiles.OrderBy(n => Guid.NewGuid()).First();
+                randomEmptyTile.Value = 2;
+            }
         }
-
 
         private void MoveUp()
         {
@@ -139,13 +129,17 @@ namespace _2048
                     {
                         getNext(tmpRow, col).Value = currentTile.Value;
                         currentTile.Value = 0;
+                        currentTile = getNext(tmpRow, col);
                         tmpRow--;
+                        _positionChanged = true;
                     }
 
                     if (tmpRow > 0 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
                         getNext(tmpRow, col).Value *= 2;
                         currentTile.Value = 0;
+                        _positionChanged = true;
+                        this.Foreground = Color.Blue;
                     }
                 }
             }
@@ -171,13 +165,16 @@ namespace _2048
                     {
                         getNext(tmpRow, col).Value = currentTile.Value;
                         currentTile.Value = 0;
+                        currentTile = getNext(tmpRow, col);
                         tmpRow++;
+                        _positionChanged = true;
                     }
 
                     if (tmpRow < _boardSize - 1 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
                         getNext(tmpRow, col).Value *= 2;
                         currentTile.Value = 0;
+                        _positionChanged = true;
                     }
                 }
             }
@@ -203,13 +200,16 @@ namespace _2048
                     {
                         getNext(row, tmpCol).Value = currentTile.Value;
                         currentTile.Value = 0;
+                        currentTile = getNext(row, tmpCol);
                         tmpCol--;
+                        _positionChanged = true;
                     }
 
                     if (tmpCol > 0 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
                         getNext(row, tmpCol).Value *= 2;
                         currentTile.Value = 0;
+                        _positionChanged = true;
                     }
                 }
             }
@@ -235,44 +235,50 @@ namespace _2048
                     {
                         getNext(row, tmpCol).Value = currentTile.Value;
                         currentTile.Value = 0;
+                        currentTile = getNext(row, tmpCol);
                         tmpCol++;
+                        _positionChanged = true;
                     }
 
                     if (tmpCol < _boardSize - 1 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
                         getNext(row, tmpCol).Value *= 2;
                         currentTile.Value = 0;
+                        _positionChanged = true;
                     }
                 }
             }
-
-            //for (int i = 0; i < _boardSize; i++)
-            //{
-            //    for (int j = _boardSize - 2; j >= 0; j--)
-            //    {
-            //        if (board[i, j].Value == 0)
-            //        {
-            //            continue;
-            //        }
-
-            //        int k = j;
-
-            //        while (k < _boardSize && board[i, k + 1].Value == 0)
-            //        {
-            //            board[i, k + 1].Value = board[i, k].Value;
-            //            board[i, k].Value = 0;
-            //            k++;
-            //        }
-
-            //        if (k < _boardSize && board[i, k + 1].Value == board[i, k].Value)
-            //        {
-            //            board[i, k + 1].Value *= 2;
-            //            board[i, k].Value = 0;
-            //        }
-            //    }
-            //}
-
         }
 
+        private bool IsGameOver()
+        {
+            for (int row = 0; row < _boardSize; row++)
+            {
+                for (int col = 0; col < _boardSize; col++)
+                {
+                    if (board[row, col].Value == 0 || IsPossibleMove(row, col))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool IsPossibleMove(int row, int col)
+        {
+            var currentTile = board[row, col];
+
+            bool left = col == 0 ? false : board[row, col - 1].Value == currentTile.Value;
+            bool right = col == _boardSize - 1 ? false : board[row, col + 1].Value == currentTile.Value;
+            bool down = row == _boardSize - 1 ? false : board[row + 1, col].Value == currentTile.Value;
+            bool up = row == 0 ? false : board[row - 1, col].Value == currentTile.Value;
+
+            return left || right || down || up;
+        }
+
+        public Color BackColor { get; set; }
+
+        public Color Foreground { get; set; }
     }
 }
