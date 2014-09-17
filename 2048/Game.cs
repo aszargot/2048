@@ -1,7 +1,6 @@
 ﻿using _2048.Model;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -27,15 +26,29 @@ namespace _2048
                 return _boardSize * _boardSize;
             }
         }
+
+        public Statistics Stats { get; set; }
+
         private bool _positionChanged;
 
         private KeyDownListener _keyDownListener;
         public delegate void KeyDownHandler(Direction direction);
         public event KeyDownHandler KeyDownEvent;
 
-        public Game()
+        public Action<Game> _binder;
+        public event EventHandler OnGameOver;
+
+        public Game(Action<Game> binder)
+        {
+            _binder = binder;
+            Initialize();
+        }
+
+        private void Initialize()
         {
             Board = new Tile[_boardSize, _boardSize];
+            Stats = new Statistics();
+
             for (int i = 0; i < _boardSize; i++)
             {
                 for (int j = 0; j < _boardSize; j++)
@@ -49,6 +62,23 @@ namespace _2048
 
             PlaceNewElementOnTheBoard();
             PlaceNewElementOnTheBoard();
+            _binder(this);
+        }
+
+        public void StartNewGame()
+        {
+            this.Stats.StatsManager.SaveScore(new Score { Username = "Player", Value = this.Stats.Score });
+
+            Stats.Score = 0;
+            for (int i = 0; i < _boardSize; i++)
+            {
+                for (int j = 0; j < _boardSize; j++)
+                {
+                    board[i, j].Value = 0;
+                }
+            }
+            PlaceNewElementOnTheBoard();
+            PlaceNewElementOnTheBoard();
         }
 
         public void Test(Direction direction)
@@ -60,7 +90,13 @@ namespace _2048
         {
             if (IsGameOver())
             {
-                throw new Exception("Game Over!!!");
+                if (OnGameOver != null)
+                {
+                    OnGameOver.Invoke(null, null);
+                }
+                StartNewGame();
+                return;
+                //throw new Exception("Game Over!!!");
             }
 
             _positionChanged = false;
@@ -109,6 +145,7 @@ namespace _2048
             }
         }
 
+
         private void MoveUp()
         {
             Func<int, int, Tile> getNext = (row, col) => board[row - 1, col];
@@ -136,10 +173,10 @@ namespace _2048
 
                     if (tmpRow > 0 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
+                        this.Stats.Score += currentTile.Value * 2;
                         getNext(tmpRow, col).Value *= 2;
                         currentTile.Value = 0;
                         _positionChanged = true;
-                        this.Foreground = Color.Blue;
                     }
                 }
             }
@@ -172,6 +209,7 @@ namespace _2048
 
                     if (tmpRow < _boardSize - 1 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
+                        this.Stats.Score += currentTile.Value * 2;
                         getNext(tmpRow, col).Value *= 2;
                         currentTile.Value = 0;
                         _positionChanged = true;
@@ -207,6 +245,7 @@ namespace _2048
 
                     if (tmpCol > 0 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
+                        this.Stats.Score += currentTile.Value * 2;
                         getNext(row, tmpCol).Value *= 2;
                         currentTile.Value = 0;
                         _positionChanged = true;
@@ -242,6 +281,7 @@ namespace _2048
 
                     if (tmpCol < _boardSize - 1 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
+                        this.Stats.Score += currentTile.Value * 2;
                         getNext(row, tmpCol).Value *= 2;
                         currentTile.Value = 0;
                         _positionChanged = true;
@@ -276,9 +316,5 @@ namespace _2048
 
             return left || right || down || up;
         }
-
-        public Color BackColor { get; set; }
-
-        public Color Foreground { get; set; }
     }
 }
