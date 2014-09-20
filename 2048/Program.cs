@@ -20,15 +20,6 @@ namespace _2048
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
 
-
-            //IRepository repo = new RepoEntity();
-
-            //Score score = new Score();
-            //score.Id = 1;
-            //score.Username = "agata";
-            //score.Value = 400;
-
-            //repo.Delete(score);
         }
     }
 }

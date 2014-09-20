@@ -13,7 +13,7 @@ namespace _2048.Model
         public event PropertyChangedEventHandler PropertyChanged;
 
         private int _value;
-        public int Value 
+        public int Value
         {
             get
             {
@@ -26,7 +26,7 @@ namespace _2048.Model
             }
         }
 
-        public Color Color 
+        public Color Color
         {
             get
             {

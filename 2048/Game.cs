@@ -1,5 +1,6 @@
 ﻿using _2048.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace _2048
 {
-    public class Game
+    public class Game : IEnumerable
     {
         private const int _boardSize = 4;
+        private bool _positionChanged;
 
         private Tile[,] board;
         public Tile[,] Board
@@ -27,16 +29,9 @@ namespace _2048
             }
         }
 
-        public Statistics Stats { get; set; }
-
-        private bool _positionChanged;
-
-        private KeyDownListener _keyDownListener;
-        public delegate void KeyDownHandler(Direction direction);
-        public event KeyDownHandler KeyDownEvent;
-
+        public Statistics Statistics { get; set; }
         public Action<Game> _binder;
-        public event EventHandler OnGameOver;
+        public Func<int, string> OnGameOver;
 
         public Game(Action<Game> binder)
         {
@@ -47,7 +42,7 @@ namespace _2048
         private void Initialize()
         {
             Board = new Tile[_boardSize, _boardSize];
-            Stats = new Statistics();
+            Statistics = new Statistics();
 
             for (int i = 0; i < _boardSize; i++)
             {
@@ -56,9 +51,6 @@ namespace _2048
                     board[i, j] = new Tile();
                 }
             }
-            //_keyDownListener = new KeyDownListener(this);
-
-            //KeyDownEvent += new KeyDownHandler(_keyDownListener.KeyDownRaises);
 
             PlaceNewElementOnTheBoard();
             PlaceNewElementOnTheBoard();
@@ -67,9 +59,7 @@ namespace _2048
 
         public void StartNewGame()
         {
-            this.Stats.StatsManager.SaveScore(new Score { Username = "Player", Value = this.Stats.Score });
-
-            Stats.Score = 0;
+            Statistics.Score = 0;
             for (int i = 0; i < _boardSize; i++)
             {
                 for (int j = 0; j < _boardSize; j++)
@@ -81,22 +71,20 @@ namespace _2048
             PlaceNewElementOnTheBoard();
         }
 
-        public void Test(Direction direction)
-        {
-            KeyDownEvent(direction);
-        }
-
         public void Move(Direction direction)
         {
             if (IsGameOver())
             {
+                string userName = null;
                 if (OnGameOver != null)
                 {
-                    OnGameOver.Invoke(null, null);
+                    userName = OnGameOver(Statistics.Score);
                 }
+                
+                this.Statistics.StatsManager.SaveScore(new Score { Username = userName ?? "Player", Value = this.Statistics.Score });
+
                 StartNewGame();
                 return;
-                //throw new Exception("Game Over!!!");
             }
 
             _positionChanged = false;
@@ -145,7 +133,6 @@ namespace _2048
             }
         }
 
-
         private void MoveUp()
         {
             Func<int, int, Tile> getNext = (row, col) => board[row - 1, col];
@@ -154,29 +141,22 @@ namespace _2048
             {
                 for (int row = 0; row < _boardSize; row++)
                 {
-                    int tmpRow = row;
-
-                    var currentTile = board[tmpRow, col];
+                    var currentTile = board[row, col];
                     if (currentTile.Value == 0)
                     {
                         continue;
                     }
 
+                    int tmpRow = row;
                     while (tmpRow > 0 && getNext(tmpRow, col).Value == 0)
                     {
-                        getNext(tmpRow, col).Value = currentTile.Value;
-                        currentTile.Value = 0;
-                        currentTile = getNext(tmpRow, col);
+                        MoveTile(getNext, col, tmpRow, ref currentTile);
                         tmpRow--;
-                        _positionChanged = true;
                     }
 
                     if (tmpRow > 0 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
-                        this.Stats.Score += currentTile.Value * 2;
-                        getNext(tmpRow, col).Value *= 2;
-                        currentTile.Value = 0;
-                        _positionChanged = true;
+                        JoinTiles(getNext, col, tmpRow, currentTile);
                     }
                 }
             }
@@ -190,29 +170,22 @@ namespace _2048
             {
                 for (int row = _boardSize - 2; row >= 0; row--)
                 {
-                    int tmpRow = row;
-
-                    var currentTile = board[tmpRow, col];
+                    var currentTile = board[row, col];
                     if (currentTile.Value == 0)
                     {
                         continue;
                     }
 
+                    int tmpRow = row;
                     while (tmpRow < _boardSize - 1 && getNext(tmpRow, col).Value == 0)
                     {
-                        getNext(tmpRow, col).Value = currentTile.Value;
-                        currentTile.Value = 0;
-                        currentTile = getNext(tmpRow, col);
+                        MoveTile(getNext, col, tmpRow, ref currentTile);
                         tmpRow++;
-                        _positionChanged = true;
                     }
 
                     if (tmpRow < _boardSize - 1 && getNext(tmpRow, col).Value == currentTile.Value)
                     {
-                        this.Stats.Score += currentTile.Value * 2;
-                        getNext(tmpRow, col).Value *= 2;
-                        currentTile.Value = 0;
-                        _positionChanged = true;
+                        JoinTiles(getNext, col, tmpRow, currentTile);
                     }
                 }
             }
@@ -226,29 +199,22 @@ namespace _2048
             {
                 for (int col = 0; col < _boardSize; col++)
                 {
-                    int tmpCol = col;
-                    var currentTile = board[row, tmpCol];
-
+                    var currentTile = board[row, col];
                     if (currentTile.Value == 0)
                     {
                         continue;
                     }
 
+                    int tmpCol = col;
                     while (tmpCol > 0 && getNext(row, tmpCol).Value == 0)
                     {
-                        getNext(row, tmpCol).Value = currentTile.Value;
-                        currentTile.Value = 0;
-                        currentTile = getNext(row, tmpCol);
+                        MoveTile(getNext, tmpCol, row, ref currentTile);
                         tmpCol--;
-                        _positionChanged = true;
                     }
 
                     if (tmpCol > 0 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
-                        this.Stats.Score += currentTile.Value * 2;
-                        getNext(row, tmpCol).Value *= 2;
-                        currentTile.Value = 0;
-                        _positionChanged = true;
+                        JoinTiles(getNext, tmpCol, row, currentTile);
                     }
                 }
             }
@@ -262,32 +228,41 @@ namespace _2048
             {
                 for (int col = _boardSize - 2; col >= 0; col--)
                 {
-                    int tmpCol = col;
-                    var currentTile = board[row, tmpCol];
-
+                    var currentTile = board[row, col];
                     if (currentTile.Value == 0)
                     {
                         continue;
                     }
 
+                    int tmpCol = col;
                     while (tmpCol < _boardSize - 1 && getNext(row, tmpCol).Value == 0)
                     {
-                        getNext(row, tmpCol).Value = currentTile.Value;
-                        currentTile.Value = 0;
-                        currentTile = getNext(row, tmpCol);
+                        MoveTile(getNext, tmpCol, row, ref currentTile);
                         tmpCol++;
-                        _positionChanged = true;
                     }
 
                     if (tmpCol < _boardSize - 1 && getNext(row, tmpCol).Value == currentTile.Value)
                     {
-                        this.Stats.Score += currentTile.Value * 2;
-                        getNext(row, tmpCol).Value *= 2;
-                        currentTile.Value = 0;
-                        _positionChanged = true;
+                        JoinTiles(getNext, tmpCol, row, currentTile);
                     }
                 }
             }
+        }
+
+        private void JoinTiles(Func<int, int, Tile> getNext, int col, int row, Tile currentTile)
+        {
+            this.Statistics.Score += currentTile.Value * 2;
+            getNext(row, col).Value *= 2;
+            currentTile.Value = 0;
+            _positionChanged = true;
+        }
+
+        private void MoveTile(Func<int, int, Tile> getNext, int col, int row, ref Tile currentTile)
+        {
+            getNext(row, col).Value = currentTile.Value;
+            currentTile.Value = 0;
+            currentTile = getNext(row, col);
+            _positionChanged = true;
         }
 
         private bool IsGameOver()
@@ -315,6 +290,17 @@ namespace _2048
             bool up = row == 0 ? false : board[row - 1, col].Value == currentTile.Value;
 
             return left || right || down || up;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            for (int i = 0; i < _boardSize; i++)
+            {
+                for (int j = 0; j < _boardSize; j++)
+                {
+                    yield return board[i, j];
+                }
+            }
         }
     }
 }
